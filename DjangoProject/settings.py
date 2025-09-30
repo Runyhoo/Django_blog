@@ -9,18 +9,40 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
+from dotenv import load_dotenv
+
 
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+load_dotenv(BASE_DIR / '.env')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4@n4qq_72y&&icog&3^kbfysiveh91m_%)7^z!$-cxyx&c2)lv'
+
+def get_secret_key():
+    key_path = os.path.join(os.path.dirname(__file__), 'secret_key.txt')
+
+    if os.path.exists(key_path):
+        with open(key_path, 'r') as f:
+            return f.read().strip()
+    else:
+        # 首次运行时生成密钥
+        import secrets
+        new_key = 'django-insecure-4@n4qq_72y&&icog&3^kbfysiveh91m_%)7^z!$-cxyx&c2)lv'
+        with open(key_path, 'w') as f:
+            f.write(new_key)
+        return new_key
+
+
+SECRET_KEY = get_secret_key()
+
+# SECRET_KEY = os.environ.get('django-insecure-4@n4qq_72y&&icog&3^kbfysiveh91m_%)7^z!$-cxyx&c2)lv')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
@@ -136,3 +158,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
