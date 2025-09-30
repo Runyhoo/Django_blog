@@ -31,9 +31,8 @@ def get_secret_key():
         with open(key_path, 'r') as f:
             return f.read().strip()
     else:
-        # 首次运行时生成密钥
         import secrets
-        new_key = 'django-insecure-4@n4qq_72y&&icog&3^kbfysiveh91m_%)7^z!$-cxyx&c2)lv'
+        new_key = secrets.token_urlsafe(50)  # 生成50字符的随机密钥
         with open(key_path, 'w') as f:
             f.write(new_key)
         return new_key
